@@ -1,0 +1,33 @@
+{
+  "name": "frontend-challenge-01",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DogPawHat/frontend-challenge-01.git"
+  },
+  "author": "Ciarán Curley <ciaran.curley.11.11@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DogPawHat/frontend-challenge-01/issues"
+  },
+  "homepage": "https://github.com/DogPawHat/frontend-challenge-01#readme",
+  "dependencies": {
+    "next": "^13.4.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.6",
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7"
+  }
+}

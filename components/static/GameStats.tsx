@@ -1,6 +1,5 @@
 import { useId } from "react";
-import { Card, CardTitle, CardHeader, CardContent } from "./ui/card";
-import { type } from "os";
+import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 
 type GameHistory = {
   winner: "P1" | "P2" | "not-played";

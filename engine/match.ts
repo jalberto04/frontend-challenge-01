@@ -1,8 +1,7 @@
 import type { StateCreator } from "zustand";
-// Add immer mutator to StateCreator (wierd pattern)
-import type {} from "zustand/middleware/immer";
 import type { Player } from "./types";
-import type { GameSlice } from "./game";
+import { createGameSlice, type GameSlice } from "./game";
+import { produce } from "immer";
 
 export const BEST_OF = 9;
 
@@ -28,6 +27,11 @@ type MatchActions = {
 
 export type MatchSlice = MatchState & MatchActions;
 
+const initalState: MatchState = {
+  matchGamesPlayed: [],
+  matchWinner: null,
+};
+
 function checkMatchWin(gamesPlayed: GameHistory[], player: Player) {
   return (
     gamesPlayed.filter((game) => game.winner === player).length >= WINS_NEEDED
@@ -37,17 +41,31 @@ function checkMatchWin(gamesPlayed: GameHistory[], player: Player) {
 // The game store is initialized with an empty board and player 1
 export const createMatchSlice: StateCreator<
   GameSlice & MatchSlice,
-  [["zustand/immer", never]],
+  [["zustand/devtools", never]],
   [],
   MatchSlice
-> = (set) => ({
-  matchWinner: null,
-  matchGamesPlayed: [],
+> = (set, ...a) => ({
+  ...initalState,
   matchAddGame: (gameWinner) =>
     set((state) => {
-      state.match.gamesPlayed.push({ winner: gameWinner });
-      if (checkMatchWin(state.match.gamesPlayed, gameWinner)) {
-        state.match.matchWinner = gameWinner;
+      const matchGamesPlayed = produce(state.matchGamesPlayed, (draft) => {
+        draft.push({ winner: gameWinner });
+      });
+
+      if (checkMatchWin(matchGamesPlayed, gameWinner)) {
+        state.matchWinner = gameWinner;
+        return {
+          matchGamesPlayed,
+          matchWinner: gameWinner,
+        };
       }
+
+      return {
+        matchGamesPlayed,
+      };
     }),
+  matchReset: () => {
+    createGameSlice(set, ...a).gameReset();
+    set(initalState);
+  },
 });

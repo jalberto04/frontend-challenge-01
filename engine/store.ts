@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 import { MatchSlice, createMatchSlice } from "./match";
 import { GameSlice, createGameSlice } from "./game";
-import { immer } from "zustand/middleware/immer";
+import { devtools } from "zustand/middleware";
 
 export const useBoundStore = create(
-  immer<GameSlice & MatchSlice>((...a) => ({
+  devtools<GameSlice & MatchSlice>((...a) => ({
     ...createGameSlice(...a),
     ...createMatchSlice(...a),
   }))

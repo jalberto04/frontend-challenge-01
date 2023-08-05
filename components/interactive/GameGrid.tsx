@@ -1,6 +1,6 @@
 "use client";
 import { Fragment } from "react";
-import { useBoundStore, createGameSlice, createMatchSlice } from "@/engine";
+import { useBoundStore } from "@/engine";
 import XSvg from "@/components/svg-icons/XSvgIcon";
 import OSvg from "@/components/svg-icons/OSvgIcon";
 import { Button } from "@/components/ui/button";
@@ -10,20 +10,22 @@ export default function GameGrid() {
   const currentPlayer = useBoundStore((state) => state.gameCurrentPlayer);
   const progress = useBoundStore((state) => state.gameProgress);
   const play = useBoundStore((state) => state.gamePlay);
-  const reset = useBoundStore((state) => state.gameReset);
-  const addGame = useBoundStore((state) => state.matchAddGame);
+  const gameReset = useBoundStore((state) => state.gameReset);
+  const matchReset = useBoundStore((state) => state.matchReset);
   const matchWinner = useBoundStore((state) => state.matchWinner);
 
   const onCellClick = (rowIndex: number, colIndex: number) => {
     if (progress === "ongoing") {
       play(rowIndex, colIndex);
-    } else if (progress === "current-player-win") {
-      addGame(currentPlayer);
     }
   };
 
   const nextGame = () => {
-    reset();
+    gameReset();
+  };
+
+  const nextMatch = () => {
+    matchReset();
   };
 
   return (
@@ -45,7 +47,12 @@ export default function GameGrid() {
         ))}
       </div>
       {matchWinner != null ? (
-        <span>Match Winner!: {matchWinner}</span>
+        <div>
+          <span>Match Winner!: {matchWinner}</span>
+          <Button type="button" onClick={nextMatch}>
+            Next game
+          </Button>
+        </div>
       ) : (
         <>
           {progress === "current-player-win" ? (

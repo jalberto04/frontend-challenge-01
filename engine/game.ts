@@ -1,8 +1,8 @@
 import type { StateCreator } from "zustand";
-// Add immer mutator to StateCreator (wierd pattern)
-import type {} from "zustand/middleware/immer";
 import type { Player } from "./types";
-import type { MatchSlice } from "./match";
+import { createMatchSlice, type MatchSlice } from "./match";
+
+import { produce } from "immer";
 
 // Engine logic for a game of tic-tac-toe
 
@@ -23,6 +23,16 @@ type GameActions = {
 };
 
 export type GameSlice = GameState & GameActions;
+
+const initalState: GameState = {
+  gameBoard: [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ],
+  gameCurrentPlayer: 1,
+  gameProgress: "ongoing",
+};
 
 function checkGameWin(board: Board, player: Player) {
   // Check rows
@@ -49,49 +59,43 @@ function checkBoardFull(board: Board) {
 // The game store is initialized with an empty board and player 1
 export const createGameSlice: StateCreator<
   GameSlice & MatchSlice,
-  [["zustand/immer", never]],
+  [["zustand/devtools", never]],
   [],
   GameSlice
-> = (set) => ({
-  gameBoard: [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ],
-  gameCurrentPlayer: 1,
-  gameProgress: "ongoing",
-  gamePlay: (row, col) =>
-    set((state) => {
-      // If the square is empty, set it to the current player
-      if (state.gameBoard[row][col] === null) {
-        state.gameBoard[row][col] = state.gameCurrentPlayer;
+> = (set, get, ...a) => ({
+  ...initalState,
+  gamePlay: (row, col) => {
+    const currentPlayer = get().gameCurrentPlayer;
+    const gameBoard = produce(get().gameBoard, (draft) => {
+      if (draft[row][col] === null) {
+        draft[row][col] = currentPlayer;
       }
+    });
 
-      // Check for a win
-      if (checkGameWin(state.gameBoard, state.gameCurrentPlayer)) {
-        state.gameProgress = "current-player-win";
-        return;
-      }
+    // Check for a win
+    if (checkGameWin(gameBoard, currentPlayer)) {
+      createMatchSlice(set, get, ...a).matchAddGame(currentPlayer);
+      set({
+        gameBoard,
+        gameProgress: "current-player-win",
+      });
+      return;
+    }
 
-      // Check for a draw
-      if (checkBoardFull(state.gameBoard)) {
-        state.gameProgress = "draw";
-        return;
-      }
+    // Check for a draw
+    if (checkBoardFull(gameBoard)) {
+      set({
+        gameBoard,
+        gameProgress: "draw",
+      });
+      return;
+    }
 
-      // Otherwise, switch to the other player
-      state.gameCurrentPlayer = state.gameCurrentPlayer === 1 ? 2 : 1;
-    }),
-  gameReset: () =>
-    set((state) => {
-      // Reset the board to empty
-      state.gameBoard = [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null],
-      ];
-      state.gameProgress = "ongoing";
-      // Reset the player to 1
-      state.gameCurrentPlayer = 1;
-    }),
+    // Otherwise, continue the game and switch players
+    set({
+      gameBoard,
+      gameCurrentPlayer: currentPlayer === 1 ? 2 : 1,
+    });
+  },
+  gameReset: () => set(initalState),
 });

@@ -1,6 +1,5 @@
 import { createGameSlice } from "./game";
-import { createMatchSlice } from "./match";
+import { BEST_OF, createMatchSlice } from "./match";
 import { useBoundStore } from "./store";
 
-export { createGameSlice, createMatchSlice, useBoundStore };
-
+export { BEST_OF, createGameSlice, createMatchSlice, useBoundStore };

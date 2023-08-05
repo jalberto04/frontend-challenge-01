@@ -1,16 +1,16 @@
-'use client';
+"use client";
 import { Fragment } from "react";
 import { useGameStore } from "@/engine/game";
 import XSvg from "@/components/svg-icons/XSvgIcon";
 import OSvg from "@/components/svg-icons/OSvgIcon";
 
-
 export default function GameGrid() {
-  const { board, play, winner } = useGameStore();
+  const { board, play, progress } = useGameStore();
 
   const onCellClick = (rowIndex: number, colIndex: number) => {
-    if (winner) return;
-    play(rowIndex, colIndex);
+    if (progress === "ongoing") {
+      play(rowIndex, colIndex);
+    }
   };
 
   return (

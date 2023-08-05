@@ -13,7 +13,7 @@ type Board = Square[][];
 type GameState = {
   board: Board;
   currentPlayer: Player;
-  winner: Player | null;
+  progress: "ongoing" | "current-player-win" | "draw";
 };
 
 type GameActions = {
@@ -26,7 +26,7 @@ function checkWin(board: Board, player: Player) {
   const rowWin = board.some((row) => row.every((square) => square === player));
 
   // Check columns
-  const colWin = board[0].every((_, i) =>
+  const colWin = board[0].some((_, i) =>
     board.every((row) => row[i] === player)
   );
 
@@ -39,6 +39,10 @@ function checkWin(board: Board, player: Player) {
   return rowWin || colWin || diagWin || antiDiagWin;
 }
 
+function checkBoardFull(board: Board) {
+  return board.every((row) => row.every((square) => square !== null));
+}
+
 // The game store is initialized with an empty board and player 1
 export const useGameStore = create(
   immer<GameState & GameActions>((set) => ({
@@ -48,7 +52,7 @@ export const useGameStore = create(
       [null, null, null],
     ],
     currentPlayer: 1,
-    winner: null,
+    progress: "ongoing",
     play: (row, col) =>
       set((state) => {
         // If the square is empty, set it to the current player
@@ -56,13 +60,20 @@ export const useGameStore = create(
           state.board[row][col] = state.currentPlayer;
         }
 
-        // Switch to the next player
-        state.currentPlayer = state.currentPlayer === 1 ? 2 : 1;
-
         // Check for a win
         if (checkWin(state.board, state.currentPlayer)) {
-          state.winner = state.currentPlayer;
+          state.progress = "current-player-win";
+          return;
         }
+
+        // Check for a draw
+        if (checkBoardFull(state.board)) {
+          state.progress = "draw";
+          return;
+        }
+
+        // Otherwise, switch to the other player
+        state.currentPlayer = state.currentPlayer === 1 ? 2 : 1;
       }),
     reset: () =>
       set((state) => {

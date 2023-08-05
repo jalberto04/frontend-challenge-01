@@ -11,19 +11,15 @@ function GameHistoryPip({
   winner: "P1" | "P2" | "not-played";
   gameIdx: number;
 }) {
-  const id = useId();
-
   if (winner === "not-played")
     return (
       <div
-        id={`game-history-pip__${gameIdx}_${id}`}
         className="w-10 h-10 border border-solid border-gray-500 bg-white"
       ></div>
     );
 
   return (
     <div
-      id={`game-history-pip__${gameIdx}_${id}`}
       className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center"
     >
       <span className="text-white">{winner}</span>

@@ -4,18 +4,17 @@ import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { useBoundStore } from "@/engine";
 
 export default function MatchVictoriesCard() {
-  const player1VictoryPercentage = useBoundStore(
-    (state) =>
-      (state.matchGamesPlayed.filter((game) => game.winner === 1).length /
-        state.matchGamesPlayed.length) *
-      100
-  );
-  const player2VictoryPercentage = useBoundStore(
-    (state) =>
-      (state.matchGamesPlayed.filter((game) => game.winner === 1).length /
-        state.matchGamesPlayed.length) *
-      100
-  );
+  const gamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
+
+  const player1VictoryPercentage =
+    (gamesPlayed.filter((game) => game.winner === 1).length /
+      gamesPlayed.length) *
+    100;
+
+  const player2VictoryPercentage =
+    (gamesPlayed.filter((game) => game.winner === 2).length /
+      gamesPlayed.length) *
+    100;
 
   return (
     <Card className="row-span-1">
@@ -29,15 +28,17 @@ export default function MatchVictoriesCard() {
             <div className="flex flex-row gap-4">
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${player1VictoryPercentage}%`}</span>
+                  <span className="text-white">{`${player1VictoryPercentage.toFixed(
+                    2
+                  )}%`}</span>
                 </div>
                 <span>V</span>
               </div>
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${
+                  <span className="text-white">{`${(
                     100 - player1VictoryPercentage
-                  }%`}</span>
+                  ).toFixed(2)}%`}</span>
                 </div>
                 <span>L</span>
               </div>
@@ -48,15 +49,17 @@ export default function MatchVictoriesCard() {
             <div className="flex flex-row gap-4">
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${player2VictoryPercentage}%`}</span>
+                  <span className="text-white">{`${player2VictoryPercentage.toFixed(
+                    2
+                  )}%`}</span>
                 </div>
                 <span>V</span>
               </div>
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${
+                  <span className="text-white">{`${(
                     100 - player2VictoryPercentage
-                  }%`}</span>
+                  ).toFixed(2)}%`}</span>
                 </div>
                 <span>L</span>
               </div>

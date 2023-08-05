@@ -1,4 +1,6 @@
-import type { StateCreator } from "zustand";
+import type { StateCreator, StoreApi } from "zustand";
+import { DateTime } from "luxon";
+
 import type { Player } from "./types";
 import { createMatchSlice, type MatchSlice } from "./match";
 
@@ -15,10 +17,14 @@ type GameState = {
   gameBoard: Board;
   gameCurrentPlayer: Player;
   gameProgress: "ongoing" | "current-player-win" | "draw";
+  gameStartDate: DateTime | null;
+  gameEndDate: DateTime | null;
 };
 
 type GameActions = {
   gamePlay: (row: number, col: number) => void;
+  gameStartTimer: () => void;
+  gameStopTimer: () => void;
   gameReset: () => void;
 };
 
@@ -32,6 +38,8 @@ const initalState: GameState = {
   ],
   gameCurrentPlayer: 1,
   gameProgress: "ongoing",
+  gameStartDate: null,
+  gameEndDate: null,
 };
 
 function checkGameWin(board: Board, player: Player) {
@@ -75,6 +83,7 @@ export const createGameSlice: StateCreator<
     // Check for a win
     if (checkGameWin(gameBoard, currentPlayer)) {
       createMatchSlice(set, get, ...a).matchAddGame(currentPlayer);
+      createGameSlice(set, get, ...a).gameStopTimer();
       set({
         gameBoard,
         gameProgress: "current-player-win",
@@ -84,18 +93,28 @@ export const createGameSlice: StateCreator<
 
     // Check for a draw
     if (checkBoardFull(gameBoard)) {
+      createGameSlice(set, get, ...a).gameStopTimer();
       set({
         gameBoard,
         gameProgress: "draw",
       });
       return;
     }
-
     // Otherwise, continue the game and switch players
     set({
       gameBoard,
       gameCurrentPlayer: currentPlayer === 1 ? 2 : 1,
     });
   },
-  gameReset: () => set(initalState),
+  gameStopTimer: () =>
+    set(() => ({
+      gameEndDate: DateTime.now(),
+    })),
+  gameStartTimer: () =>
+    set(() => ({
+      gameStartDate: DateTime.now(),
+    })),
+  gameReset: () => {
+    set(initalState);
+  },
 });

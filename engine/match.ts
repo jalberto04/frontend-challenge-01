@@ -23,6 +23,7 @@ type MatchState = {
 
 type MatchActions = {
   matchAddGame: (gameWinner: Player) => void;
+  matchReset: () => void;
 };
 
 export type MatchSlice = MatchState & MatchActions;

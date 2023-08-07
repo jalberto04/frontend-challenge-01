@@ -23,6 +23,7 @@ export default function GameGrid({ className }: { className?: string }) {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
+    // If the game is over, stop the timer
     if (stopDateTime != null && startDateTime != null) {
       setElapsed(
         Math.floor(stopDateTime.diff(startDateTime, "seconds").seconds)
@@ -30,6 +31,7 @@ export default function GameGrid({ className }: { className?: string }) {
       return () => {};
     }
 
+    // If the game is ongoing, keep updating the timer
     if (startDateTime != null) {
       const timer = setInterval(() => {
         setElapsed(

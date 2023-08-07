@@ -1,3 +1,11 @@
+/*
+  * The app is set up with Next.js 13 and Tailwind CSS,
+  * It uses the App router by default
+  * `page.tsx` is a server component, so it will be rendered on the server only
+  * The imports are client components, connected together with a Zustand store
+  * that implements the game and match logic
+  * */
+
 import GameGrid from "@/components/GameGrid";
 import GamePlayerVictoryCount from "@/components/GamePlayerVictoryCount";
 import MatchHistoryCard from "@/components/MatchHistoryCard";

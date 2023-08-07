@@ -1,12 +1,9 @@
-import type { StateCreator, StoreApi } from "zustand";
+import type { StateCreator } from "zustand";
 import { DateTime } from "luxon";
+import { produce } from "immer";
 
 import type { Player } from "./types";
 import { createMatchSlice, type MatchSlice } from "./match";
-
-import { produce, immerable } from "immer";
-import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage";
-import { stat } from "fs";
 
 // Engine logic for a game of tic-tac-toe
 
@@ -44,6 +41,12 @@ const initalState: GameState = {
   gameStopDateTime: null,
 };
 
+/**
+ * Detects if a player has won the game
+ * @param board 
+ * @param player 
+ * @returns 
+ */
 function checkGameWin(board: Board, player: Player) {
   // Check rows
   const rowWin = board.some((row) => row.every((square) => square === player));
@@ -62,6 +65,11 @@ function checkGameWin(board: Board, player: Player) {
   return rowWin || colWin || diagWin || antiDiagWin;
 }
 
+/**
+ * Detects if the board is full
+ * @param board
+ * @returns
+ */
 function checkBoardFull(board: Board) {
   return board.every((row) => row.every((square) => square !== null));
 }
@@ -116,6 +124,7 @@ export const createGameSlice: StateCreator<
     set(initalState);
   },
   gameStartTimer: () => {
+    // Set the game start time
     const gameStartDateTime = DateTime.now();
     set({
       gameStartDateTime,
@@ -123,6 +132,7 @@ export const createGameSlice: StateCreator<
     });
   },
   gameStopTimer: () => {
+    // Set the game stop time
     const gameStopDateTime = DateTime.now();
     set({
       gameStopDateTime,

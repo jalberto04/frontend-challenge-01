@@ -6,9 +6,9 @@ import { useBoundStore } from "@/engine";
 import XSvg from "@/components/svg-icons/XSvgIcon";
 import OSvg from "@/components/svg-icons/OSvgIcon";
 import { Button } from "@/components/ui/button";
-import { calulateGameTime } from "@/lib/utils";
+import { calulateGameTime, cn } from "@/lib/utils";
 
-export default function GameGrid() {
+export default function GameGrid({ className }: { className?: string }) {
   const board = useBoundStore((state) => state.gameBoard);
   const currentPlayer = useBoundStore((state) => state.gameCurrentPlayer);
   const progress = useBoundStore((state) => state.gameProgress);
@@ -65,7 +65,8 @@ export default function GameGrid() {
   };
 
   return (
-    <div>
+    <div className={className}>
+      <div className="text-center text-lg font-semibold py-2">Current Player: {currentPlayer}</div>
       <div className={`grid grid-rows-3 grid-cols-3 border border-black`}>
         {board.map((row, rowIndex) => (
           <Fragment key={rowIndex}>
@@ -83,34 +84,31 @@ export default function GameGrid() {
           </Fragment>
         ))}
       </div>
-      <div className="flex flex-col">
-        <span>Current Player: {currentPlayer}</span>
-        <span>{calulateGameTime(elapsed)}</span>
-      </div>
+      <div className="text-center text-xl py-4">{calulateGameTime(elapsed)}</div>
       {matchWinner != null ? (
-        <div>
+        <>
           <span>Match Winner!: {matchWinner}</span>
           <Button type="button" onClick={nextMatch}>
             Next game
           </Button>
-        </div>
+        </>
       ) : (
         <>
           {progress === "current-player-win" ? (
-            <div>
+            <>
               <span>Game Winner!: {currentPlayer}</span>
               <Button type="button" onClick={nextGame}>
                 Next game
               </Button>
-            </div>
+            </>
           ) : null}
           {progress == "draw" ? (
-            <div>
+            <>
               <span>Draw</span>
               <Button type="button" onClick={nextGame}>
                 Next game
               </Button>
-            </div>
+            </>
           ) : null}
         </>
       )}

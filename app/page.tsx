@@ -16,9 +16,7 @@ export default function Page() {
       <main>
         <section className="mx-auto flex w-full justify-center gap-x-12 bg-gray-200 py-14">
           <GamePlayerVictoryCount player={1} />
-          <div className="p-16">
-            <GameGrid />
-          </div>
+            <GameGrid className="p-16"/>
           <GamePlayerVictoryCount player={2} />
         </section>
         <section className="p-12 flex flex-col space-y-2 text-center">

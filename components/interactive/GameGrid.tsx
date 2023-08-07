@@ -6,16 +6,7 @@ import { useBoundStore } from "@/engine";
 import XSvg from "@/components/svg-icons/XSvgIcon";
 import OSvg from "@/components/svg-icons/OSvgIcon";
 import { Button } from "@/components/ui/button";
-
-const calulateGameTime = (timeInSeconds = 0) => {
-  const hours = Math.floor(timeInSeconds / 3600);
-  const minutes = Math.floor((timeInSeconds % 3600) / 60);
-  const seconds = timeInSeconds % 60;
-
-  return `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-};
+import { calulateGameTime } from "@/lib/utils";
 
 export default function GameGrid() {
   const board = useBoundStore((state) => state.gameBoard);

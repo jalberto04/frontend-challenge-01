@@ -1,6 +1,6 @@
-import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import MatchVictoriesCard from "@/components/interactive/MatchVictoriesCard";
 import MatchHistoryCard from "@/components/interactive/MatchHistoryCard";
+import MatchTimeCard from "@/components/interactive/MatchTimeCard";
 
 export default function MatchStats() {
   return (
@@ -9,14 +9,7 @@ export default function MatchStats() {
       <div className="grid grid-flow-row auto-rows-auto grid-cols-2 gap-2">
         <MatchVictoriesCard />
         <MatchHistoryCard />
-        <Card className="col-span-2">
-          <CardHeader>
-            <CardTitle>Total play time</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xl">00:21:14</p>
-          </CardContent>
-        </Card>
+        <MatchTimeCard />
       </div>
     </section>
   );

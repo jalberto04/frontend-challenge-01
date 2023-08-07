@@ -5,6 +5,8 @@ import type { Player } from "./types";
 import { createMatchSlice, type MatchSlice } from "./match";
 
 import { produce, immerable } from "immer";
+import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage";
+import { stat } from "fs";
 
 // Engine logic for a game of tic-tac-toe
 
@@ -82,8 +84,12 @@ export const createGameSlice: StateCreator<
 
     // Check for a win
     if (checkGameWin(gameBoard, currentPlayer)) {
-      createMatchSlice(set, get, ...a).matchAddGame(currentPlayer);
       createGameSlice(set, get, ...a).gameStopTimer();
+      const timeTaken = Math.floor(
+        get().gameStopDateTime!.diff(get().gameStartDateTime!, "seconds")
+          .seconds
+      );
+      createMatchSlice(set, get, ...a).matchAddGame(currentPlayer, timeTaken);
       set({
         gameBoard,
         gameProgress: "current-player-win",

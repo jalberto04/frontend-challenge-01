@@ -14,6 +14,7 @@ const WINS_NEEDED = calcWinsNeeded();
 type GameHistory = {
   // Only wins will be tracked, draws will be replayed
   winner: Player;
+  timeTaken: number;
 };
 
 type MatchState = {
@@ -22,7 +23,7 @@ type MatchState = {
 };
 
 type MatchActions = {
-  matchAddGame: (gameWinner: Player) => void;
+  matchAddGame: (gameWinner: Player, timeTaken: number) => void;
   matchReset: () => void;
 };
 
@@ -47,10 +48,13 @@ export const createMatchSlice: StateCreator<
   MatchSlice
 > = (set, ...a) => ({
   ...initalState,
-  matchAddGame: (gameWinner) =>
+  matchAddGame: (gameWinner, gameTime) =>
     set((state) => {
       const matchGamesPlayed = produce(state.matchGamesPlayed, (draft) => {
-        draft.push({ winner: gameWinner });
+        draft.push({
+          winner: gameWinner,
+          timeTaken: gameTime,
+        });
       });
 
       if (checkMatchWin(matchGamesPlayed, gameWinner)) {

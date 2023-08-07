@@ -27,7 +27,7 @@ function GameHistoryPip({
   );
 }
 
-export default function MatchVictoriesCard() {
+export default function MatchVictoriesCard({ className }: { className?: string}) {
   const gamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
 
   const gameHistory = Array.from({ length: BEST_OF }, (_, idx) => {
@@ -48,7 +48,7 @@ export default function MatchVictoriesCard() {
   });
 
   return (
-    <Card className="row-span-1">
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Games History</CardTitle>
       </CardHeader>

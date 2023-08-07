@@ -3,7 +3,11 @@
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { useBoundStore } from "@/engine";
 
-export default function MatchVictoriesCard() {
+export default function MatchVictoriesCard({
+  className,
+}: {
+  className?: string;
+}) {
   const gamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
 
   const player1VictoryPercentage = (() => {
@@ -25,7 +29,7 @@ export default function MatchVictoriesCard() {
   })();
 
   return (
-    <Card className="row-span-1">
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Victories %</CardTitle>
       </CardHeader>
@@ -42,9 +46,7 @@ export default function MatchVictoriesCard() {
               </div>
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${
-                    player2VictoryPercentage
-                  }%`}</span>
+                  <span className="text-white">{`${player2VictoryPercentage}%`}</span>
                 </div>
                 <span>L</span>
               </div>
@@ -61,9 +63,7 @@ export default function MatchVictoriesCard() {
               </div>
               <div>
                 <div className="w-10 h-10 bg-gray-500 flex justify-center items-center text-center rounded-full">
-                  <span className="text-white">{`${
-                    player1VictoryPercentage
-                  }%`}</span>
+                  <span className="text-white">{`${player1VictoryPercentage}%`}</span>
                 </div>
                 <span>L</span>
               </div>

@@ -6,7 +6,7 @@ import { calulateGameTime } from "@/lib/utils";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 
-export default function MatchTimeCard() {
+export default function MatchTimeCard({ className }: { className?: string }) {
   const gameStartDateTime = useBoundStore((state) => state.gameStartDateTime);
   const gameStopDateTime = useBoundStore((state) => state.gameStopDateTime);
   const matchGamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
@@ -39,7 +39,7 @@ export default function MatchTimeCard() {
   const totalPlayTime = calulateGameTime(timeElapsedInPreviousGames + currentGameTime);
 
   return (
-    <Card className="col-span-2">
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Total play time</CardTitle>
       </CardHeader>

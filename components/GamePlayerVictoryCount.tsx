@@ -2,10 +2,16 @@
 
 import { useBoundStore } from "@/engine";
 
-export default function GamePlayerVictoryCount({ player }: { player: number }) {
-    const matchGamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
+export default function GamePlayerVictoryCount({
+  player,
+}: {
+  player: number;
+}) {
+  const matchGamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
 
-    const playerVictories = matchGamesPlayed.filter((game) => game.winner === player).length;
+  const playerVictories = matchGamesPlayed.filter(
+    (game) => game.winner === player
+  ).length;
 
   return (
     <div className="flex flex-col justify-center text-center">

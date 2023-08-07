@@ -1,10 +1,13 @@
 "use client";
 
 import { useBoundStore } from "@/engine";
+import { cn } from "@/lib/utils";
 
 export default function GamePlayerVictoryCount({
+  className,
   player,
 }: {
+  className?: string;
   player: number;
 }) {
   const matchGamesPlayed = useBoundStore((state) => state.matchGamesPlayed);
@@ -14,7 +17,7 @@ export default function GamePlayerVictoryCount({
   ).length;
 
   return (
-    <div className="flex flex-col justify-center text-center">
+    <div className={cn("flex flex-col justify-center text-center", className)}>
       <span className="font-bold text-2xl">PLAYER {player}</span>
       <span className="font-semibold text-5xl">{playerVictories}</span>
     </div>

@@ -76,9 +76,9 @@ export default function GameGrid({ className }: { className?: string }) {
                 onClick={() => onCellClick(rowIndex, colIndex)}
                 className="border border-black p-4"
               >
-                {cell === 1 ? <XSvg /> : null}
-                {cell === 2 ? <OSvg /> : null}
-                {cell === null ? <div className="w-10 h-10" /> : null}
+                {cell === 1 ? <XSvg className="w-20 h-20 lg:w-10 lg:h-10" /> : null}
+                {cell === 2 ? <OSvg className="w-20 h-20 lg:w-10 lg:h-10"/> : null}
+                {cell === null ? <div className="w-20 h-20 lg:w-10 lg:h-10" /> : null}
               </div>
             ))}
           </Fragment>

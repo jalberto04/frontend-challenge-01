@@ -73,10 +73,11 @@ export default function GameGrid() {
               <div
                 key={`${rowIndex}-${colIndex}`}
                 onClick={() => onCellClick(rowIndex, colIndex)}
-                className="border border-black p-3"
+                className="border border-black p-4"
               >
                 {cell === 1 ? <XSvg /> : null}
                 {cell === 2 ? <OSvg /> : null}
+                {cell === null ? <div className="w-10 h-10" /> : null}
               </div>
             ))}
           </Fragment>

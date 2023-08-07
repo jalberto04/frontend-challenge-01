@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import type { Player } from "./types";
 import { createMatchSlice, type MatchSlice } from "./match";
 
-import { produce } from "immer";
+import { produce, immerable } from "immer";
 
 // Engine logic for a game of tic-tac-toe
 
@@ -17,8 +17,8 @@ type GameState = {
   gameBoard: Board;
   gameCurrentPlayer: Player;
   gameProgress: "ongoing" | "current-player-win" | "draw";
-  gameStartDate: DateTime | null;
-  gameEndDate: DateTime | null;
+  gameStartDateTime: DateTime | null;
+  gameStopDateTime: DateTime | null;
 };
 
 type GameActions = {
@@ -38,8 +38,8 @@ const initalState: GameState = {
   ],
   gameCurrentPlayer: 1,
   gameProgress: "ongoing",
-  gameStartDate: null,
-  gameEndDate: null,
+  gameStartDateTime: null,
+  gameStopDateTime: null,
 };
 
 function checkGameWin(board: Board, player: Player) {
@@ -106,15 +106,20 @@ export const createGameSlice: StateCreator<
       gameCurrentPlayer: currentPlayer === 1 ? 2 : 1,
     });
   },
-  gameStopTimer: () =>
-    set(() => ({
-      gameEndDate: DateTime.now(),
-    })),
-  gameStartTimer: () =>
-    set(() => ({
-      gameStartDate: DateTime.now(),
-    })),
   gameReset: () => {
     set(initalState);
+  },
+  gameStartTimer: () => {
+    const gameStartDateTime = DateTime.now();
+    set({
+      gameStartDateTime,
+      gameStopDateTime: null,
+    });
+  },
+  gameStopTimer: () => {
+    const gameStopDateTime = DateTime.now();
+    set({
+      gameStopDateTime,
+    });
   },
 });

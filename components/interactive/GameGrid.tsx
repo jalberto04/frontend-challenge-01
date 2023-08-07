@@ -1,30 +1,20 @@
 "use client";
 import { Fragment, useEffect, useState } from "react";
-import { DateTime, Duration, IntervalObject } from "luxon";
+import { DateTime } from "luxon";
 
 import { useBoundStore } from "@/engine";
 import XSvg from "@/components/svg-icons/XSvgIcon";
 import OSvg from "@/components/svg-icons/OSvgIcon";
 import { Button } from "@/components/ui/button";
 
-const calulateGameTime = (
-  startDate: DateTime | null,
-  endDate: DateTime | null
-) => {
-  if (startDate && endDate) {
-    return DateTime.fromObject({ hour: 0, minute: 0, second: 0 })
-      .plus(endDate.diff(startDate))
-      .toLocaleString(DateTime.TIME_24_WITH_SECONDS);
-  }
+const calulateGameTime = (timeInSeconds = 0) => {
+  const hours = Math.floor(timeInSeconds / 3600);
+  const minutes = Math.floor((timeInSeconds % 3600) / 60);
+  const seconds = timeInSeconds % 60;
 
-  if (startDate && endDate == null) {
-    return DateTime.fromObject({ hour: 0, minute: 0, second: 0 })
-      .plus(DateTime.now().diff(startDate))
-      .toLocaleString(DateTime.TIME_24_WITH_SECONDS);
-  }
-
-  return DateTime.fromObject({ hour: 0, minute: 0, second: 0 })
-    .toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 };
 
 export default function GameGrid() {
@@ -35,33 +25,39 @@ export default function GameGrid() {
   const gameReset = useBoundStore((state) => state.gameReset);
   const matchReset = useBoundStore((state) => state.matchReset);
   const matchWinner = useBoundStore((state) => state.matchWinner);
-  const startDate = useBoundStore((state) => state.gameStartDate);
-  const endDate = useBoundStore((state) => state.gameEndDate);
+  const startDateTime = useBoundStore((state) => state.gameStartDateTime);
+  const stopDateTime = useBoundStore((state) => state.gameStopDateTime);
   const startTimer = useBoundStore((state) => state.gameStartTimer);
 
-  const [gameTime, setGameTime] = useState<string>(
-    calulateGameTime(startDate, endDate)
-  );
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    setGameTime(calulateGameTime(startDate, endDate));
-
-    if (startDate && endDate == null) {
-      const interval = setInterval(() => {
-        setGameTime(calulateGameTime(startDate, null));
-      }, 1000);
-
-      return () => {
-        clearInterval(interval);
-      };
+    if (stopDateTime != null && startDateTime != null) {
+      setElapsed(
+        Math.floor(stopDateTime.diff(startDateTime, "seconds").seconds)
+      );
+      return () => {};
     }
 
+    if (startDateTime != null) {
+      const timer = setInterval(() => {
+        setElapsed(
+          Math.floor(DateTime.now().diff(startDateTime, "seconds").seconds)
+        );
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+
+    setElapsed(0);
+
     return () => {};
-  }, [startDate, endDate]);
+  }, [startDateTime, stopDateTime]);
 
   useEffect(() => {
-    startTimer();
-  }, []);
+    if (progress === "ongoing" && startDateTime == null) {
+      startTimer();
+    }
+  }, [progress, startDateTime]);
 
   const onCellClick = (rowIndex: number, colIndex: number) => {
     if (progress === "ongoing") {
@@ -71,7 +67,6 @@ export default function GameGrid() {
 
   const nextGame = () => {
     gameReset();
-    startTimer();
   };
 
   const nextMatch = () => {
@@ -98,7 +93,7 @@ export default function GameGrid() {
       </div>
       <div className="flex flex-col">
         <span>Current Player: {currentPlayer}</span>
-        <span>{gameTime}</span>
+        <span>{calulateGameTime(elapsed)}</span>
       </div>
       {matchWinner != null ? (
         <div>
